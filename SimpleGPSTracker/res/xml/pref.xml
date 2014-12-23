@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+	<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+	
+        <ListPreference
+            android:entries="@array/location_provider"
+            android:entryValues="@array/location_provider_value"
+            android:key="providers"
+            android:summary="@string/summary_providers"
+            android:title="@string/providers" />
+
+	    <ListPreference
+	        android:entries="@array/refresh_time"
+	        android:entryValues="@array/refresh_time_value"
+	        android:key="refreshTime"
+	        android:summary="@string/summary_refresh_time"
+	        android:title="@string/refresh_time_title" />
+	    
+	   	<ListPreference
+	        android:entries="@array/view_route"
+	        android:entryValues="@array/view_route_value"
+	        android:key="viewRoute"
+	        android:summary="@string/summary_view_route"
+	        android:title="@string/view_route_title" />
+
+	        <PreferenceScreen
+	            android:key="url"
+	            android:title="@string/set_url_server" >
+	            <intent
+	                android:targetClass="com.example.simplegpstracker.ServerUrlActivity"
+	                android:targetPackage="com.example.simplegpstracker" >
+	                <extra
+	                    android:name="EXTRA_KEY"
+	                    android:value="yourValue" />
+	            </intent>
+	        </PreferenceScreen>
+	
+	</PreferenceScreen>

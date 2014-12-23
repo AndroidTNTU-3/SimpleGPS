@@ -1,0 +1,58 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.unrealedz.gpstracker.MainActivity"
+    tools:ignore="MergeRootFrame" >
+    
+    <LinearLayout    
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    android:orientation="vertical">
+    
+        
+	    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" 
+	    android:orientation="horizontal">
+	    
+	        <Button
+	        android:id="@+id/bStartService"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_start" />
+	    
+	    	<Button
+	        android:id="@+id/bStopService"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_stop" />
+	     
+	    </LinearLayout>
+	    
+	    <LinearLayout 
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content" 
+	    android:orientation="horizontal">
+	    
+	         <Button
+	        android:id="@+id/bViewMap"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_map" />
+	    
+	    	<Button
+	        android:id="@+id/bSendServer"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/b_send" />
+	     
+	    </LinearLayout>
+	 </LinearLayout> 
+
+</FrameLayout>

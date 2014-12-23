@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">ПростоGPS</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Налаштування</string>
+    <string name="server_url_field_title">Адреса сервера</string>
+    <string name="title_activity_view_map">Мапа</string>
+    <string name="title_activity_server_url">Адреса сервера</string>
+    <string name="title_activity_pref">Налаштування</string>
+    <string name="set">Добре</string>
+    <string name="gps_off">Увімкніть GPS</string>
+    <string name="network_off">Увімкніть Network</string>
+    <string name="b_start">Старт</string>
+    <string name="b_stop">Стоп</string>
+     <string name="b_map">Мапа</string>
+     <string name="b_send">Відправити</string>
+    
+    <string name="providers">Провайдери</string>
+    <string name="summary_providers">Вибір провайдера розташування</string>
+    
+    <string name="refresh_time_title">Час оновлення</string>
+    <string name="summary_refresh_time">Період оновлення</string>
+    
+    <string name="view_route_title">Шлях</string>
+    <string name="summary_view_route">Вигляд шляху</string>
+    
+    <string name="set_url_server">Виберіть сервер</string>
+    <string name="service_start">Сервіс запушено</string>
+    <string name="service_stop">Сервіс зупинено</string>
+
+    <string-array name="location_provider">
+        <item>GPS</item>
+        <item>Network</item>
+        <item>Best provider</item>
+    </string-array>
+    <string-array name="location_provider_value">
+        <item>"GPS"</item>
+        <item>"Network"</item>
+        <item>"Best provider"</item>
+    </string-array>
+    
+        <string-array name="view_route">
+        <item>As markers</item>
+        <item>As lines</item>
+    </string-array>
+    <string-array name="view_route_value">
+        <item>"marker"</item>
+        <item>"line"</item>
+    </string-array>
+
+	<string-array name="refresh_time">
+        <item>1 секунда</item>
+        <item>2 секунди</item>
+        <item>5 секунд</item>
+    </string-array>  
+    <string-array name="refresh_time_value">
+        <item>"1"</item>
+        <item>"2"</item>
+        <item>"5"</item>
+    </string-array>
+
+</resources>
