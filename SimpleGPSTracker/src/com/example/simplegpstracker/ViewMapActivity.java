@@ -1,5 +1,6 @@
 package com.example.simplegpstracker;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,13 +59,21 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	ArrayList<LatLng> points1 = null;
 	PolylineOptions polyLineOptions1 = new PolylineOptions();
 	ArrayList<LatLng> points2 = null;
+	ArrayList<LatLng> realPoints = null;
 	Marker marker;	
+	
+	LatLng destPoint;
+	GPSInfo infoMarker;
+	private double accelerate;
+	private float gyr_x;
+	private float gyr_y;
+	private float gyr_z;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_map);
-		
+
 		//get parameter how to show the route on a map
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		viewRouteParameter = preferences.getString("viewRoute", "marker");
@@ -90,7 +99,12 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		for(int i=1; i<list1.size(); i++){
 			points1.add(new LatLng(list1.get(i).getLatitude(), list1.get(i).getLongitude()));
 		}
+		
+		//a points array from a google responding for calculate a selected point on a path
 		points2 = new ArrayList<LatLng>();
+		
+		//a points array that has been received from GPS  
+		realPoints = new ArrayList<LatLng>();
 
 		////////Test Array
 		
@@ -99,7 +113,10 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
         list = new ArrayList<GPSInfo>();
         list = helper.getGPSPoint();
         
-		
+        //get real point LatLng
+        for(GPSInfo info: list){
+        	realPoints.add(new LatLng(info.getLatitude(), info.getLongitude()));
+        }
   	
 		mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		map = mapFragment.getMap();
@@ -108,11 +125,11 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		      finish();
 		      return;
 		    }
-
-		
-		
-
+		//moving camera to first point
+		if(points2.size() != 0){
 				
+		}
+
 		//show on map way as marker or track
 			
 			//because a parameter MAX_WAYPOINTS must be less 8 divide a array into parts
@@ -144,18 +161,35 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	                // Getting the position from the marker
 	                LatLng latLng = arg0.getPosition();
 
+
 	                // Getting reference to the TextView to set latitude
 	                TextView tvLat = (TextView) v.findViewById(R.id.tv_lat);
 
 	                // Getting reference to the TextView to set longitude
 	                TextView tvLng = (TextView) v.findViewById(R.id.tv_lng);
+	                
+	                // Getting reference to the TextView to set accelerate
+	                TextView tvAccel = (TextView) v.findViewById(R.id.tv_accel);
+	                
+	             // Getting reference to the TextView to set orientation
+	                TextView tvGyrX = (TextView) v.findViewById(R.id.tv_gyr_x);
+	                TextView tvGyrY = (TextView) v.findViewById(R.id.tv_gyr_y);
+	                TextView tvGyrZ = (TextView) v.findViewById(R.id.tv_gyr_z);
 
 	                // Setting the latitude
-	                tvLat.setText("Latitude:" + latLng.latitude);
+	                tvLat.setText("Latitude:" + destPoint.latitude);
 
 	                // Setting the longitude
-	                tvLng.setText("Longitude:"+ latLng.longitude);
-
+	                tvLng.setText("Longitude:"+ destPoint.longitude);
+	                
+	                // Setting the accelerate
+	                DecimalFormat df = new DecimalFormat("#.##");
+	                tvAccel.setText(getResources().getString(R.string.accelerate) + ": " + df.format(accelerate) + " " + getResources().getString(R.string.accelerate_value));
+	                
+	             // Setting the orientation
+	                tvGyrX.setText(getResources().getString(R.string.orientation_x) + ": " + df.format(gyr_x));
+	                tvGyrY.setText(getResources().getString(R.string.orientation_y) + ": " + df.format(gyr_y));
+	                tvGyrZ.setText(getResources().getString(R.string.orientation_z) + ": " + df.format(gyr_z));
 	                // Returning the view containing InfoWindow contents
 	                return v;
 
@@ -170,7 +204,34 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 					//map.clear();
 					
 					//get nearest point
-					LatLng destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);
+					
+					if (marker != null) {
+	                    marker.remove();
+	                }
+					destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);					
+	                
+	                //Getting accelerate an other info
+					
+					LatLng destPointInfo = PolyUtil.GetTargetPoint(clickCoords, realPoints, false, 2);					
+					int index = PolyUtil.GetTargetIndex();
+					if (index >= list.size()) index = list.size() - 1;
+
+					
+	                /*infoMarker = new GPSInfo();
+	                infoMarker = helper.getPointInfo(index);*/
+					
+					//get accelerate from db
+	                accelerate = list.get(index).getAcceleration();
+	                
+	              //get orientation from db
+	                gyr_x = list.get(index).getGyroscopex();
+	                gyr_y = list.get(index).getGyroscopey();
+	                gyr_z= list.get(index).getGyroscopez();
+	                
+	                if (accelerate != 0)
+	                Log.i("DEBUG", "Accell from DB" + accelerate);
+	                else Log.i("DEBUG", "Accell from DB is null" + accelerate);
+	                		
 					// Creating an instance of MarkerOptions to set position
 	                MarkerOptions markerOptions = new MarkerOptions();
 
@@ -181,7 +242,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	                map.animateCamera(CameraUpdateFactory.newLatLng(destPoint));
 
 	                // Adding marker on the GoogleMap
-	                Marker marker = map.addMarker(markerOptions);
+	                marker = map.addMarker(markerOptions);
 
 	                // Showing InfoWindow on the GoogleMap
 	                marker.showInfoWindow();
@@ -310,10 +371,9 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			points2.add(p);	
 		}
 		
-		//moving camera to first point
+		
 		newLatLng = new LatLng(points2.get(0).latitude, points2.get(0).longitude);
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,15));
-		
 		if (viewRouteParameter.equals("marker")) addMarkers(points);
 		else map.addPolyline(polyLineOptions);
 	}

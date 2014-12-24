@@ -28,6 +28,13 @@
     <string name="set_url_server">Виберіть сервер</string>
     <string name="service_start">Сервіс запушено</string>
     <string name="service_stop">Сервіс зупинено</string>
+    
+    <string name="accelerate">Прискорення</string>
+    <string name="accelerate_value">м/с</string>
+    
+    <string name="orientation_x">Положення X</string>
+    <string name="orientation_y">Положення Y</string>
+    <string name="orientation_z">Положення Z</string>
 
     <string-array name="location_provider">
         <item>GPS</item>

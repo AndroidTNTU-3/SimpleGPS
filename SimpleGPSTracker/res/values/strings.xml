@@ -29,7 +29,14 @@
     <string name="service_start">Service is started</string>
     <string name="service_stop">Service is stoped</string>
     
-        <color name="bg_color">#ffffff</color>
+    <string name="accelerate">Accelerate</string>
+    <string name="accelerate_value">m/s</string>
+    
+    <string name="orientation_x">Orientation X</string>
+    <string name="orientation_y">Orientation y</string>
+    <string name="orientation_z">Orientation z</string>
+    
+    <color name="bg_color">#ffffff</color>
 
     <string-array name="location_provider">
         <item>GPS</item>

@@ -30,6 +30,7 @@ import static com.google.maps.android.MathUtil.*;
 public class PolyUtil {
 	
 	static LatLng targetPoint = null;
+	static int targetIndex = 0;
 
     private PolyUtil() {}
     
@@ -40,6 +41,9 @@ public class PolyUtil {
     	return targetPoint;
     }
     
+    public static int GetTargetIndex(){ 	
+    	return targetIndex;
+    }
 
     /**
      * Returns tan(latitude-at-lng3) on the great circle (lat1, lng1) to (lat2, lng2). lng1==0.
@@ -196,7 +200,7 @@ public class PolyUtil {
                 double lat2 = toRadians(point2.latitude);
                 double lng2 = toRadians(point2.longitude);
                 if (isOnSegmentGC(lat1, lng1, lat2, lng2, lat3, lng3, havTolerance)) {
-                   // return true;
+                    return true;
                 }
                 lat1 = lat2;
                 lng1 = lng2;
@@ -212,6 +216,7 @@ public class PolyUtil {
             double y1 = mercator(lat1);
             double y3 = mercator(lat3);
             double[] xTry = new double[3];
+            int k = 0;
             for (LatLng point2 : poly) {
                 double lat2 = toRadians(point2.latitude);
                 double y2 = mercator(lat2);
@@ -237,6 +242,9 @@ public class PolyUtil {
 							
 							Log.i("DEBUG", " In UTIL:" + Double.toString((point2.longitude)));
 							targetPoint = point2;
+							
+							targetIndex = k;
+							Log.i("DEBUG", " In UTIL K:" + k);
                             return true;
                         }
                     }
@@ -244,6 +252,7 @@ public class PolyUtil {
                 lat1 = lat2;
                 lng1 = lng2;
                 y1 = y2;
+                k++;
             }
         }
         Log.i("DEBUG", "NOOO" );

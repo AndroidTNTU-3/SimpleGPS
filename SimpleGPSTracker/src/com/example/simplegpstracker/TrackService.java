@@ -2,13 +2,17 @@ package com.example.simplegpstracker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import com.example.simplegpstracker.GetPoliLine.PoliLoaderCallBack;
 import com.example.simplegpstracker.db.GPSInfoHelper;
 import com.example.simplegpstracker.entity.GPSInfo;
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.location.Location;
@@ -23,9 +27,16 @@ import android.util.Log;
 ////////////////////////////////////
 
 public class TrackService extends Service {
+	
+	public static interface UnregisterCallBack{
+		public void Unregister();
+	}
+	
+	UnregisterCallBack unregisterCallBack;
+	
 	private SharedPreferences preferences;
-
-	private int refreshTime;
+	
+	private int refreshTime = 5000;
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
     // timer handling
@@ -33,6 +44,8 @@ public class TrackService extends Service {
     
     GPSInfoHelper helper;
     LocationLoader locationLoader;
+    SensorScanner sensor;
+    Context context;
     
     @Override
     public IBinder onBind(Intent intent) {
@@ -46,7 +59,11 @@ public class TrackService extends Service {
     	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5000"));
         helper = new GPSInfoHelper(getApplicationContext());
         helper.cleanOldRecords();
-        locationLoader = new LocationLoader(getApplicationContext());
+        
+        context = getApplicationContext();
+        locationLoader = new LocationLoader(context, this);
+        sensor = new SensorScanner(this);
+        
         if(mTimer != null) {
             mTimer.cancel();
         } else {
@@ -72,18 +89,20 @@ public class TrackService extends Service {
                 public void run() {
 
             		Location location = locationLoader.getLocation();
-            		if (location != null){
             		GPSInfo info = new GPSInfo();
+            		info = sensor.GetSensorValue(context);
+            		if (location != null){
             		
             		info.setId(1);
             		info.setLongitude(location.getLongitude());
             		info.setLatitude(location.getLatitude());
             		info.setAccuracy(location.getAccuracy());
+            		info.setAcceleration(info.getAcceleration());
             		info.setTitle("Track1");
             		info.setTime(System.currentTimeMillis());
             		
             		helper.insert(info);
-            		
+            		Log.d("DEBUG", "Acceler" + String.valueOf(info.getAcceleration()));
             		Log.i("DEBUG", "Inserted");
             		}
                 }
@@ -98,8 +117,14 @@ public class TrackService extends Service {
         }
     }
     
+  //registering callback
+  	public void setCallBack(UnregisterCallBack unregisterCallBack) {
+  		this.unregisterCallBack = unregisterCallBack;
+  	}
+    
     public void onDestroy() {
         super.onDestroy();
+        unregisterCallBack.Unregister();
         helper.closeDB();
         mTimer.cancel();
         Log.d("DEBUG", "MyService onDestroy");

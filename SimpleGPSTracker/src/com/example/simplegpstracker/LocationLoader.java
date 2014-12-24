@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import com.example.simplegpstracker.TrackService.UnregisterCallBack;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -24,10 +26,12 @@ import android.widget.Toast;
 //Get current location 
 ////////////////////////////////////
 
-public class LocationLoader implements LocationListener {
+public class LocationLoader implements LocationListener, UnregisterCallBack{
 	
 	private final static int MIN_TIME = 400;
 	private final static int MIN_DISTANCE = 5;
+	
+	TrackService service;
 	
 	public static interface LocationLoaderCallBack{
 		public void setLocation(String cityId);
@@ -36,17 +40,18 @@ public class LocationLoader implements LocationListener {
 	LocationLoaderCallBack locationLoaderCallBack;
 	
 	  private LocationManager locationManager;
-	  private String provider;
+	  private String provider = "GPS";
 	  private Context context;
 	  private Location location;
 	  private double latitude;
 	  private double longitude; 
 	  private SharedPreferences preferences;
 	  	
-	public LocationLoader(Context context){
+	public LocationLoader(Context context, TrackService service){
 		this.context = context;
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
+		this.service = service;
+		service.setCallBack(this);
 	}
 	
 	private void setProvider(String providers) {
@@ -88,9 +93,6 @@ public class LocationLoader implements LocationListener {
             if (location != null) {
             	latitude = location.getLatitude();
             	longitude = location.getLongitude();
-            	
-        	    Log.i("DEBUG", " lat:" + String.valueOf(location.getLatitude()));
-        	    Log.i("DEBUG", " lon:" + String.valueOf(location.getLongitude()));
         	    onLocationChanged(location);
         	        	       
             }    
@@ -126,6 +128,12 @@ public class LocationLoader implements LocationListener {
 	public void onStatusChanged(String arg0, int arg1, Bundle arg2) {
 		// TODO Auto-generated method stub
 
+	}
+	
+	//unregistering updates after stop service
+	@Override
+	public void Unregister() {		
+		locationManager.removeUpdates(this);
 	}
 	
 }

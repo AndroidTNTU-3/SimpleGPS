@@ -8,7 +8,31 @@ public class GPSInfo {
 	private float accuracy;
 	private String title;
 	private long time;
+	private double acceleration;
+	private float gyroscopex;
+	private float gyroscopey;
+	private float gyroscopez;
 	
+	public float getGyroscopez() {
+		return gyroscopez;
+	}
+	
+	public float getGyroscopex() {
+		return gyroscopex;
+	}
+
+	public void setGyroscopex(float gyroscopex) {
+		this.gyroscopex = gyroscopex;
+	}
+	
+	public void setGyroscopey(float gyroscopey) {
+		this.gyroscopey = gyroscopey;
+	}
+	
+	public void setGyroscopez(float gyroscopez) {
+		this.gyroscopez = gyroscopez;
+	}
+
 	public GPSInfo(){};
 	
 	public GPSInfo(Double longitude, Double latitude){
@@ -19,6 +43,14 @@ public class GPSInfo {
 	public int getId() {
 		return Id;
 	}
+	
+
+	public float getGyroscopey() {
+		return gyroscopey;
+	}
+
+	
+
 	public void setId(int id) {
 		Id = id;
 	}
@@ -52,6 +84,14 @@ public class GPSInfo {
 	}
 	public void setTime(long time) {
 		this.time = time;
+	}
+
+	public double getAcceleration() {
+		return acceleration;
+	}
+
+	public void setAcceleration(double acceleration) {
+		this.acceleration = acceleration;
 	}
 
 
