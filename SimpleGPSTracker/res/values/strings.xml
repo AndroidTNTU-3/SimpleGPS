@@ -28,6 +28,8 @@
     <string name="set_url_server">Set url server</string>
     <string name="service_start">Service is started</string>
     <string name="service_stop">Service is stoped</string>
+    
+        <color name="bg_color">#ffffff</color>
 
     <string-array name="location_provider">
         <item>GPS</item>

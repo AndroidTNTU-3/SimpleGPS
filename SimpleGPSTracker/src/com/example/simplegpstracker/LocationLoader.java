@@ -27,7 +27,7 @@ import android.widget.Toast;
 public class LocationLoader implements LocationListener {
 	
 	private final static int MIN_TIME = 400;
-	private final static int MIN_DISTANCE = 1;
+	private final static int MIN_DISTANCE = 5;
 	
 	public static interface LocationLoaderCallBack{
 		public void setLocation(String cityId);
