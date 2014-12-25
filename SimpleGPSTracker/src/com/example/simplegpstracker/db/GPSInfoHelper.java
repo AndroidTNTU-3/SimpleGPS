@@ -75,6 +75,7 @@ public class GPSInfoHelper {
     	String sql = "SELECT * FROM " + DbHelper.TRACKER_DB_TABLE + " WHERE _id = " + index;
 		GPSInfo gpsInfo = new GPSInfo();
 		Cursor cursor = db.rawQuery(sql, null);
+		
 		if (cursor.getCount() != 0) {
 
 			cursor.moveToFirst();
@@ -92,7 +93,8 @@ public class GPSInfoHelper {
 				gpsInfo.setTime(cursor.getLong(cursor.getColumnIndex(DbHelper.TRACKER_DB_TIME)));
 			} while(cursor.moveToNext());
 		}
-		cursor.close();
+		
+		if (cursor != null) cursor.close();
 		return gpsInfo;
     }
 

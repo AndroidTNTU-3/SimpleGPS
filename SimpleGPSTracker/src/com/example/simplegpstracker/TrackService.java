@@ -61,6 +61,7 @@ public class TrackService extends Service {
         helper.cleanOldRecords();
         
         context = getApplicationContext();
+        
         locationLoader = new LocationLoader(context, this);
         sensor = new SensorScanner(this);
         
@@ -70,8 +71,13 @@ public class TrackService extends Service {
             // recreate new
             mTimer = new Timer();
         }
-        // schedule task
-        mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, refreshTime * 1000);
+        
+        ///// schedule task
+        //check if any provider is enabled
+        if(locationLoader.IsProviderEnable()) mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, refreshTime * 1000);
+        //else service will be stopped
+        else this.stopSelf();
+
     }
     
     public int onStartCommand(Intent intent, int flags, int startId) {       
@@ -83,6 +89,7 @@ public class TrackService extends Service {
         @Override
         public void run() {
             // run on another thread
+        	//if(locationLoader.IsProviderEnable()) TrackService.this.stopSelf();
             mHandler.post(new Runnable() {
  
                 @Override
@@ -102,7 +109,6 @@ public class TrackService extends Service {
             		info.setTime(System.currentTimeMillis());
             		
             		helper.insert(info);
-            		Log.d("DEBUG", "Acceler" + String.valueOf(info.getAcceleration()));
             		Log.i("DEBUG", "Inserted");
             		}
                 }

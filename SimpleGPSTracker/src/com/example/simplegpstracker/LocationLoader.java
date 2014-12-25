@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Locale;
 
 import com.example.simplegpstracker.TrackService.UnregisterCallBack;
+import com.google.android.gms.maps.model.LatLng;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -28,17 +29,19 @@ import android.widget.Toast;
 
 public class LocationLoader implements LocationListener, UnregisterCallBack{
 	
+	//the minimum time interval for notifications, 
+    //in milliseconds
 	private final static int MIN_TIME = 400;
-	private final static int MIN_DISTANCE = 5;
 	
+	//the minimum distance interval for notifications, in meters
+	private final static int MIN_DISTANCE = 5;
+		
 	TrackService service;
 	
 	public static interface LocationLoaderCallBack{
 		public void setLocation(String cityId);
 	}
-	
-	LocationLoaderCallBack locationLoaderCallBack;
-	
+		
 	  private LocationManager locationManager;
 	  private String provider = "GPS";
 	  private Context context;
@@ -49,40 +52,50 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	  	
 	public LocationLoader(Context context, TrackService service){
 		this.context = context;
-		preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		this.service = service;
 		service.setCallBack(this);
+		//get a selected provider 
+		preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		provider = preferences.getString("providers", "Best provider");
+		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);	
 	}
 	
 	private void setProvider(String providers) {
-		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);	
-		if (providers.equals("GPS")) {
-			//check if GPS enable
-			if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) provider = LocationManager.GPS_PROVIDER;
+		
+		if (providers.equals("GPS"))  provider = LocationManager.GPS_PROVIDER;
+		else if (providers.equals("Network")) provider = LocationManager.NETWORK_PROVIDER;
+		else if (providers.equals("Best provider")){
+				Criteria criteria = new Criteria();
+				criteria.setAccuracy(Criteria.ACCURACY_FINE);
+				provider = locationManager.getBestProvider(criteria, false);
+		}
+	}
+	
+	//check if selected provider enabled
+	public boolean IsProviderEnable(){
+		//check if GPS enable
+		if(provider.equals("GPS")){
+			if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) return true;
 			else {
 				Toast toast = Toast.makeText(context, context.getResources().getString(R.string.gps_off), Toast.LENGTH_SHORT); 
 				toast.show(); 
 			}
-		}
-		else if (providers.equals("Network")) {
-			//check if Network enable
-			if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) provider = LocationManager.NETWORK_PROVIDER;
+		//check if Network enable
+		} else if(provider.equals("Network")){
+			if(locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return true;
 			else{
 				Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
 				toast.show();
 			}
-			provider = LocationManager.NETWORK_PROVIDER;
+		} else if(provider.equals("Best provider")) {
+			if(locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) return true;
 		}
-		else if (providers.equals("Best provider")){
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_FINE);
-		    provider = locationManager.getBestProvider(criteria, false);
-		}
+		return false;		
 	}
 
 	public Location getLocation(){
 	// Get the location manager
-		setProvider(preferences.getString("providers", "Best provider"));
+		setProvider(provider);
 		Log.i("DEBUG", " provider:" + preferences.getString("providers", "Best provider"));
 
 		locationManager.requestLocationUpdates(provider, MIN_TIME, MIN_DISTANCE, this);
@@ -97,6 +110,10 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
         	        	       
             }    
 	    }
+	    
+	    Log.i("DEBUG", " lon:" + Double.toString(latitude));
+		
+		Log.i("DEBUG", " lat:" + Double.toString(longitude));
 	    //locationManager.removeUpdates(this);
 	    return location;
 	}
@@ -132,7 +149,8 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	
 	//unregistering updates after stop service
 	@Override
-	public void Unregister() {		
+	public void Unregister() {	
+		
 		locationManager.removeUpdates(this);
 	}
 	

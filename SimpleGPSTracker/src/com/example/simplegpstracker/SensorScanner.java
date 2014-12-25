@@ -26,6 +26,7 @@ public class SensorScanner implements UnregisterCallBack{
 	int rotation;
 	private double totalAccel = 0.0;
 	private GPSInfo info;
+	
 
 	
 	SensorScanner(TrackService service){
@@ -65,36 +66,36 @@ public class SensorScanner implements UnregisterCallBack{
 	
 	SensorEventListener listener = new SensorEventListener() {
 
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-      switch (event.sensor.getType()) {
-      case Sensor.TYPE_LINEAR_ACCELERATION:
-        for (int i = 0; i < 3; i++) {
-          valuesLinAccel[i] = event.values[i];
-        }
-        totalAccel = Math.sqrt(valuesLinAccel[0] * valuesLinAccel[0] 
-        		+ valuesLinAccel[1] * valuesLinAccel[1] + valuesLinAccel[2] * valuesLinAccel[2]);
-        break;
-      case Sensor.TYPE_ACCELEROMETER:
-          for (int i=0; i < 3; i++){
-            valuesAccel[i] = event.values[i];
-          }        
-          break;
-        case Sensor.TYPE_MAGNETIC_FIELD:
-          for (int i=0; i < 3; i++){
-            valuesMagnet[i] = event.values[i];
-          }  
-          break;
-
-      }
-
-    }
-
-  };
+	    @Override
+	    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+	    }
+	
+	    @Override
+	    public void onSensorChanged(SensorEvent event) {
+	      switch (event.sensor.getType()) {
+	      case Sensor.TYPE_LINEAR_ACCELERATION:
+	        for (int i = 0; i < 3; i++) {
+	          valuesLinAccel[i] = event.values[i];
+	        }
+	        totalAccel = Math.sqrt(valuesLinAccel[0] * valuesLinAccel[0] 
+	        		+ valuesLinAccel[1] * valuesLinAccel[1] + valuesLinAccel[2] * valuesLinAccel[2]);
+	        break;
+	      case Sensor.TYPE_ACCELEROMETER:
+	          for (int i=0; i < 3; i++){
+	            valuesAccel[i] = event.values[i];
+	          }        
+	          break;
+	        case Sensor.TYPE_MAGNETIC_FIELD:
+	          for (int i=0; i < 3; i++){
+	            valuesMagnet[i] = event.values[i];
+	          }  
+	          break;
+	
+	      }
+	
+	    }
+	
+	  };
   
   //get orientation
   void getDeviceOrientation() {
@@ -110,6 +111,7 @@ public class SensorScanner implements UnregisterCallBack{
   	//unregistering listener after stop service
 	@Override
 	public void Unregister() {
+		if(sensorManager != null)
 		sensorManager.unregisterListener(listener);		
 	}
 

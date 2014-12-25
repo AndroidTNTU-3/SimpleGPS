@@ -43,10 +43,7 @@ import com.google.maps.android.*;
 ////////////////////////////////////
 
 public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallBack{
-	LatLng newLatLng;
-	LocationLoader locationLoader;
-	Location location;
-	PolylineOptions polyLineOptions = null;
+	private LatLng newLatLng;
 	private SharedPreferences preferences;
 	private String viewRouteParameter; 
  
@@ -54,16 +51,18 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	private GoogleMap map;
 	private GPSInfoHelper helper;
 	private List<GPSInfo> list;
+	/////TEST BLOCK
 	private List<GPSInfo> list1;
-	ArrayList<LatLng> points = null;
-	ArrayList<LatLng> points1 = null;
-	PolylineOptions polyLineOptions1 = new PolylineOptions();
-	ArrayList<LatLng> points2 = null;
-	ArrayList<LatLng> realPoints = null;
+	private ArrayList<LatLng> points1 = null;
+	/////TEST BLOCK
+	private ArrayList<LatLng> points2 = null;
+	private ArrayList<LatLng> realPoints = null;
 	Marker marker;	
 	
-	LatLng destPoint;
+	private LatLng destPoint;
 	GPSInfo infoMarker;
+	
+	//info from sensors
 	private double accelerate;
 	private float gyr_x;
 	private float gyr_y;
@@ -80,7 +79,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		Log.i("DEBUG", "view:" + viewRouteParameter);
 		
 	
-		/////////////////////TEST ARRAY for getMapsApiDirectionsUrl()
+		/////////////////////TEST BLOCK ARRAY for getMapsApiDirectionsUrl()
 		//newLatLng = new LatLng(49.54965588, 25.59697587);
 		list1 = new ArrayList<GPSInfo>();
 		list1.add(new GPSInfo(25.59697587, 49.54965588));
@@ -94,19 +93,19 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		//list1.add(new GPSInfo(25.59660384, 49.54905421));
 		//list1.add(new GPSInfo(25.59657031, 49.54900006));
 		//list1.add(new GPSInfo(25.59651712, 49.54895933));
-		///////////////////
+		
 		points1 = new ArrayList<LatLng>();
 		for(int i=1; i<list1.size(); i++){
 			points1.add(new LatLng(list1.get(i).getLatitude(), list1.get(i).getLongitude()));
 		}
+		///////////////////TEST BLOCK 
+
 		
 		//a points array from a google responding for calculate a selected point on a path
 		points2 = new ArrayList<LatLng>();
 		
 		//a points array that has been received from GPS  
 		realPoints = new ArrayList<LatLng>();
-
-		////////Test Array
 		
 		//get data from database
         helper = new GPSInfoHelper(getApplicationContext());
@@ -130,7 +129,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 				
 		}
 
-		//show on map way as marker or track
+		//Show on map way as marker or track
 			
 			//because a parameter MAX_WAYPOINTS must be less 8 divide a array into parts
 			ArrayList<GPSInfo> list8 = new ArrayList<GPSInfo>();
@@ -171,7 +170,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	                // Getting reference to the TextView to set accelerate
 	                TextView tvAccel = (TextView) v.findViewById(R.id.tv_accel);
 	                
-	             // Getting reference to the TextView to set orientation
+	                // Getting reference to the TextView to set orientation
 	                TextView tvGyrX = (TextView) v.findViewById(R.id.tv_gyr_x);
 	                TextView tvGyrY = (TextView) v.findViewById(R.id.tv_gyr_y);
 	                TextView tvGyrZ = (TextView) v.findViewById(R.id.tv_gyr_z);
@@ -184,9 +183,10 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	                
 	                // Setting the accelerate
 	                DecimalFormat df = new DecimalFormat("#.##");
-	                tvAccel.setText(getResources().getString(R.string.accelerate) + ": " + df.format(accelerate) + " " + getResources().getString(R.string.accelerate_value));
+	                tvAccel.setText(getResources().getString(R.string.accelerate) + ": " + df.format(accelerate) 
+	                		+ " " + getResources().getString(R.string.accelerate_value));
 	                
-	             // Setting the orientation
+	                // Setting the orientation
 	                tvGyrX.setText(getResources().getString(R.string.orientation_x) + ": " + df.format(gyr_x));
 	                tvGyrY.setText(getResources().getString(R.string.orientation_y) + ": " + df.format(gyr_y));
 	                tvGyrZ.setText(getResources().getString(R.string.orientation_z) + ": " + df.format(gyr_z));
@@ -208,6 +208,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 					if (marker != null) {
 	                    marker.remove();
 	                }
+					
 					destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);					
 	                
 	                //Getting accelerate an other info
@@ -223,7 +224,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 					//get accelerate from db
 	                accelerate = list.get(index).getAcceleration();
 	                
-	              //get orientation from db
+	                //get orientation from db
 	                gyr_x = list.get(index).getGyroscopex();
 	                gyr_y = list.get(index).getGyroscopey();
 	                gyr_z= list.get(index).getGyroscopez();
@@ -251,6 +252,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			);
 	}
 	
+	/////////////FOR TEST BLOCK
 	private void addMarkers1() {
 		for(GPSInfo info: list1 ){
 			newLatLng = new LatLng(info.getLatitude(), info.getLongitude());	
@@ -260,7 +262,9 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			}
 		}
 	}
+	/////////////FOR TEST BLOCK
 	
+	///show path as markers
 	private void addMarkers(ArrayList<LatLng> points) {
 		if((points != null) && (points.size() != 0)){
 		for(LatLng info: points ){	
@@ -282,7 +286,6 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 
 		getPoly.setLoaderCallBack(this);
 		getPoly.start(url);
-
 				 
 	}
 	
