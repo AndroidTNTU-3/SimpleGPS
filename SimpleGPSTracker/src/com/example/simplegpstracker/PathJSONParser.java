@@ -11,6 +11,7 @@ import org.json.JSONObject;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.PolyUtil;
 
 /////////////////////////////////////
 //Parse obtained a json from the google server

@@ -56,7 +56,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 		service.setCallBack(this);
 		//get a selected provider 
 		preferences = PreferenceManager.getDefaultSharedPreferences(context);
-		provider = preferences.getString("providers", "Best provider");
+		provider = preferences.getString("providers", "Network");
 		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);	
 	}
 	

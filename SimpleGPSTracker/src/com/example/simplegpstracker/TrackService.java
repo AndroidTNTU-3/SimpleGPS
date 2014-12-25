@@ -56,7 +56,7 @@ public class TrackService extends Service {
     public void onCreate() {
         // cancel if already existed
     	preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5000"));
+    	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5"));
         helper = new GPSInfoHelper(getApplicationContext());
         helper.cleanOldRecords();
         
