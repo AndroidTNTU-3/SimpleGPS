@@ -68,12 +68,12 @@
         <item>5 second</item>
         <item>10 second</item>
     </string-array>  
-    <integer-array name="refresh_time_value">
-        <item>1</item>
-        <item>2</item>
-        <item>5</item>
-        <item>10</item>
-    </integer-array>
+    <string-array name="refresh_time_value">
+        <item>"1"</item>
+        <item>"2"</item>
+        <item>"5"</item>
+        <item>"10"</item>
+    </string-array>
     
     <string-array name="trevel_mode">
         <item>driving</item>

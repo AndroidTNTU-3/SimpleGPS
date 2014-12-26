@@ -225,45 +225,48 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		                    marker.remove();
 		                }
 						
-						destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);					
+						destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);
+						
+						if(destPoint != null){
 		                
-		                //Getting accelerate an other info
-						
-						LatLng destPointInfo = PolyUtil.GetTargetPoint(clickCoords, realPoints, false, 2);					
-						int index = PolyUtil.GetTargetIndex();
-						if (index >= list.size()) index = list.size() - 1;
-	
-						
-		                /*infoMarker = new GPSInfo();
-		                infoMarker = helper.getPointInfo(index);*/
-						
-						//get accelerate from db
-		                accelerate = list.get(index).getAcceleration();
-		                
-		                //get orientation from db
-		                gyr_x = list.get(index).getGyroscopex();
-		                gyr_y = list.get(index).getGyroscopey();
-		                gyr_z= list.get(index).getGyroscopez();
-						
-		                
-		                if (accelerate != 0)
-		                Log.i("DEBUG", "Accell from DB" + accelerate);
-		                else Log.i("DEBUG", "Accell from DB is null" + accelerate);
-		                		
-						// Creating an instance of MarkerOptions to set position
-		                MarkerOptions markerOptions = new MarkerOptions();
-	
-		                // Setting position on the MarkerOptions
-		                markerOptions.position(destPoint);
-	
-		                // Animating to the currently touched position
-		                map.animateCamera(CameraUpdateFactory.newLatLng(destPoint));
-	
-		                // Adding marker on the GoogleMap
-		                marker = map.addMarker(markerOptions);
-	
-		                // Showing InfoWindow on the GoogleMap
-		                marker.showInfoWindow();
+			                //Getting accelerate an other info
+							
+							LatLng destPointInfo = PolyUtil.GetTargetPoint(clickCoords, realPoints, false, 2);					
+							int index = PolyUtil.GetTargetIndex();
+							if (index >= list.size()) index = list.size() - 1;
+		
+							
+			                /*infoMarker = new GPSInfo();
+			                infoMarker = helper.getPointInfo(index);*/
+							
+							//get accelerate from db
+			                accelerate = list.get(index).getAcceleration();
+			                
+			                //get orientation from db
+			                gyr_x = list.get(index).getGyroscopex();
+			                gyr_y = list.get(index).getGyroscopey();
+			                gyr_z= list.get(index).getGyroscopez();
+							
+			                
+			                if (accelerate != 0)
+			                Log.i("DEBUG", "Accell from DB" + accelerate);
+			                else Log.i("DEBUG", "Accell from DB is null" + accelerate);
+			                		
+							// Creating an instance of MarkerOptions to set position
+			                MarkerOptions markerOptions = new MarkerOptions();
+		
+			                // Setting position on the MarkerOptions
+			                markerOptions.position(destPoint);
+		
+			                // Animating to the currently touched position
+			                map.animateCamera(CameraUpdateFactory.newLatLng(destPoint));
+		
+			                // Adding marker on the GoogleMap
+			                marker = map.addMarker(markerOptions);
+		
+			                // Showing InfoWindow on the GoogleMap
+			                marker.showInfoWindow();
+						}
 					}
 					
 				}}
@@ -301,7 +304,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	
 	private void addTrack(ArrayList<GPSInfo> list8){
 		//Get URL for multiple waypoints
-		if(UtilsNet.isOnline(getApplicationContext())){
+
 			String url = getMapsApiDirectionsUrl(list8);
 			
 			//Get array of points from google directions
@@ -309,11 +312,6 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	
 			getPoly.setLoaderCallBack(this);
 			getPoly.start(url);
-		}
-		else {
-			Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
-			toast.show();
-		}
 				 
 	}
 	

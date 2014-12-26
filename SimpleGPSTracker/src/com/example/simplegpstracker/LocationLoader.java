@@ -62,7 +62,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	
 	private void setProvider(String providers) {
 		
-		if (providers.equals("GPS"))  provider = LocationManager.GPS_PROVIDER;
+		if (providers.equals("GPS")) provider = LocationManager.GPS_PROVIDER;
 		else if (providers.equals("Network")) provider = LocationManager.NETWORK_PROVIDER;
 		else if (providers.equals("Best provider")){
 				Criteria criteria = new Criteria();
@@ -96,7 +96,7 @@ public class LocationLoader implements LocationListener, UnregisterCallBack{
 	public Location getLocation(){
 	// Get the location manager
 		setProvider(provider);
-		Log.i("DEBUG", " provider:" + preferences.getString("providers", "Best provider"));
+		Log.i("DEBUG", " provider:" + provider);
 
 		locationManager.requestLocationUpdates(provider, MIN_TIME, MIN_DISTANCE, this);
 		

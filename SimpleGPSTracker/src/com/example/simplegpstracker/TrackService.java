@@ -36,7 +36,7 @@ public class TrackService extends Service {
 	
 	private SharedPreferences preferences;
 	
-	private int refreshTime = 5000;
+	private int refreshTime = 5;
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
     // timer handling
@@ -57,6 +57,8 @@ public class TrackService extends Service {
         // cancel if already existed
     	preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5"));
+    	//refreshTime = preferences.getInt("refreshTime", 5);
+    	Log.i("DEBUG", " Time:" + refreshTime);
         helper = new GPSInfoHelper(getApplicationContext());
         helper.cleanOldRecords();
         

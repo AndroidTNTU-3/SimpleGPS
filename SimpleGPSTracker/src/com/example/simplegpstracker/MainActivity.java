@@ -2,6 +2,8 @@ package com.example.simplegpstracker;
 
 import java.util.Date;
 
+import com.example.simplegpstracker.utils.UtilsNet;
+
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
@@ -86,8 +88,13 @@ public class MainActivity extends Activity {
 				toast_stop.show();
 				break;
 			case R.id.bViewMap:
-				Intent iMap = new Intent(context, ViewMapActivity.class);
-				startActivity(iMap);
+				if(UtilsNet.isOnline(getApplicationContext())){
+					Intent iMap = new Intent(context, ViewMapActivity.class);
+					startActivity(iMap);
+				}else {
+					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
+					toast.show();
+				}
 				break;
 			case R.id.bSendServer:
 				new Transmitter(context).send();
