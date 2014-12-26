@@ -88,12 +88,15 @@ public class MainActivity extends Activity {
 				toast_stop.show();
 				break;
 			case R.id.bViewMap:
-				if(UtilsNet.isOnline(getApplicationContext())){
+				if(!UtilsNet.isOnline(getApplicationContext())){
+					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
+					toast.show();				
+				}else if(UtilsNet.IsServiceRunning(context)){
+					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.service_started), Toast.LENGTH_SHORT); 
+					toast.show();
+				}else{
 					Intent iMap = new Intent(context, ViewMapActivity.class);
 					startActivity(iMap);
-				}else {
-					Toast toast = Toast.makeText(context, context.getResources().getString(R.string.network_off), Toast.LENGTH_SHORT); 
-					toast.show();
 				}
 				break;
 			case R.id.bSendServer:

@@ -19,9 +19,11 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -72,12 +74,18 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	private float gyr_x;
 	private float gyr_y;
 	private float gyr_z;
+	ProgressDialog progress;
+	private Menu optionsMenu;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_map);
 		context = getApplicationContext();
+		progress = new ProgressDialog(this);
+		progress.setMessage("Buffering...");
+		progress.show();
+		
 		//get parameter how to show the route on a map
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		//how to show the route on a map
@@ -353,6 +361,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.view_map, menu);
+		optionsMenu = menu;
 		return true;
 	}
 
@@ -398,13 +407,17 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			points2.add(p);	
 		}
 		
+		
 		newLatLng = new LatLng(points2.get(0).latitude, points2.get(0).longitude);
 		//newLatLng = new LatLng(49.54965588, 25.59697587);
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,15));
+		
 		if (viewRouteParameter.equals("marker")) addMarkers(points);
 		else map.addPolyline(polyLineOptions);
+		if (progress.isShowing()) {
+			progress.dismiss();
+		}
 	}
 
-	
 
 }

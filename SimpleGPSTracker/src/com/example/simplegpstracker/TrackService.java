@@ -132,7 +132,8 @@ public class TrackService extends Service {
     
     public void onDestroy() {
         super.onDestroy();
-        unregisterCallBack.Unregister();
+        locationLoader.Unregister();
+        sensor.Unregister();
         helper.closeDB();
         mTimer.cancel();
         Log.d("DEBUG", "MyService onDestroy");

@@ -32,6 +32,7 @@
     <string name="set_url_server">Виберіть сервер</string>
     <string name="service_start">Сервіс запушено</string>
     <string name="service_stop">Сервіс зупинено</string>
+    <string name="service_started">Ви повинні зупинити сервіс</string>
     
     <string name="accelerate">Прискорення</string>
     <string name="accelerate_value">м/с</string>

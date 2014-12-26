@@ -32,7 +32,7 @@ public class UtilsNet {
         ActivityManager manager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
  
         for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
-            if ("com.unrealedz.wstation.UpdateService".equals(service.service.getClassName())) {
+            if ("com.example.simplegpstracker.TrackService".equals(service.service.getClassName())) {
                 return true;
             }
         }
