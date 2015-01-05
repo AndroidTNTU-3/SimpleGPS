@@ -15,25 +15,46 @@
     <string name="b_stop">Stop</string>
     <string name="b_map">Map</string>
     <string name="b_send">Send</string>
+    <string name="b_set">Set</string>
     <string name="message_base_empty">Base of point is empty</string>
     <string name="action_refresh">Refresh</string>
+    
+    <string name="dialog_warning_title">Warning</string>
+    <string name="dialog_warning_button_ok">ОК</string>
+    <string name="dialog_warning_message_net">Network not enabled. Enable Network or GPS</string>
+    <string name="dialog_warning_message_gps">GPS not enabled. Enable GPS or Network</string>
      
     <string name="providers">Providers</string>
+    <string name="providers_key">providers</string>
+    <string name="providers_title">Providers</string>
     <string name="summary_providers">Selection of provider</string>
     
     <string name="refresh_time_title">Refresh</string>
+    <string name="refresh_time_key">refreshTime</string>
     <string name="summary_refresh_time">Select refresh time</string>
     
     <string name="view_route_title">Route view</string>
+    <string name="view_route_key">viewRoute</string>
     <string name="summary_view_route">Select route view</string>
     
-    <string name="trevel_mode_title">Travel mode</string>
-    <string name="summary_trevel_mode">Select travel mode</string>
+    <string name="travel_mode_title">Travel mode</string>
+    <string name="travel_mode_key">travelMode</string>
+    <string name="summary_travel_mode">Select travel mode</string>
     
     <string name="set_url_server">Set url server</string>
+    <string name="url_server_title">Set url server</string>
+    <string name="url_server_key">url</string>
+    <string name="summary_url_server">Set url server</string>
+    
     <string name="service_start">Service is started</string>
     <string name="service_stop">Service is stoped</string>
     <string name="service_started">You must stop the service</string>
+    
+    <string name="status_enabled">Enabled</string>
+    <string name="status_disabled">Disabled</string>
+    
+    <string name="gps">GPS</string>
+    <string name="network">Network</string>
     
     <string name="accelerate">Accelerate</string>
     <string name="accelerate_value">m/s</string>
@@ -55,7 +76,7 @@
         <item>"Best provider"</item>
     </string-array>
     
-        <string-array name="view_route">
+    <string-array name="view_route">
         <item>As markers</item>
         <item>As lines</item>
     </string-array>
@@ -77,13 +98,13 @@
         <item>"10"</item>
     </string-array>
     
-    <string-array name="trevel_mode">
+    <string-array name="travel_mode">
         <item>driving</item>
         <item>walking</item>
         <item>bicycling</item>
         <item>transit</item>
     </string-array>  
-    <string-array name="trevel_mode_value">
+    <string-array name="travel_mode_value">
         <item>"Driving"</item>
         <item>"Walking"</item>
         <item>"Bicycling"</item>

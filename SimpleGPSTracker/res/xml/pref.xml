@@ -16,11 +16,11 @@
 	        android:title="@string/refresh_time_title" />
 	    
 	    <ListPreference
-	        android:entries="@array/trevel_mode"
-	        android:entryValues="@array/trevel_mode_value"
-	        android:key="trevelMode"
-	        android:summary="@string/summary_trevel_mode"
-	        android:title="@string/trevel_mode_title" />
+	        android:entries="@array/travel_mode"
+	        android:entryValues="@array/travel_mode_value"
+	        android:key="@string/travel_mode_key"
+	        android:summary="@string/summary_travel_mode"
+	        android:title="@string/travel_mode_title" />
 	    
 	   	<ListPreference
 	        android:entries="@array/view_route"

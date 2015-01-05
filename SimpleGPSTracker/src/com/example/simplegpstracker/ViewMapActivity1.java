@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import com.example.simplegpstracker.GetPoliLine.PoliLoaderCallBack;
+import com.example.simplegpstracker.PointAdapter.PointAdapterCallBack;
 import com.example.simplegpstracker.db.GPSInfoHelper;
 import com.example.simplegpstracker.entity.GPSInfo;
 import com.example.simplegpstracker.utils.UtilsNet;
@@ -47,7 +48,7 @@ import com.google.maps.android.*;
 //Get location point and show they on map
 ////////////////////////////////////
 
-public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallBack{
+public class ViewMapActivity1 extends FragmentActivity implements PointAdapterCallBack{
 	private LatLng newLatLng;
 	private SharedPreferences preferences;
 	private String viewRouteParameter; 
@@ -62,8 +63,12 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	private List<GPSInfo> list1;
 	private ArrayList<LatLng> points1 = null;
 	/////TEST BLOCK
-	private ArrayList<LatLng> points2 = null;
+
+	
 	private ArrayList<LatLng> realPoints = null;
+	private ArrayList<LatLng> allPoints = null;
+	
+	ArrayList<LatLng> newPoints;
 	Marker marker;	
 	
 	private LatLng destPoint;
@@ -74,7 +79,6 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 	private float gyr_x;
 	private float gyr_y;
 	private float gyr_z;
-	ProgressDialog progress;
 	private Menu optionsMenu;
 
 	@Override
@@ -82,10 +86,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_view_map);
 		context = getApplicationContext();
-		progress = new ProgressDialog(this);
-		progress.setMessage("Buffering...");
-		progress.show();
-		
+			
 		//get parameter how to show the route on a map
 		preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 		//how to show the route on a map
@@ -116,29 +117,19 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		}
 		///////////////////TEST BLOCK 
 
+		allPoints = new ArrayList<LatLng>();
+		PointAdapter pointAdapter = new PointAdapter(context);
+		pointAdapter.setPointAdapterCallBack(this);
 		
-		//a points array from a google responding for calculate a selected point on a path
-		points2 = new ArrayList<LatLng>();
+		//1. check if a dataBase is not empty
+		if(!pointAdapter.isDataAccess()) finish();
 		
-		//a points array that has been received from GPS  
-		realPoints = new ArrayList<LatLng>();
+		//2. Start computing point by google directions
+		pointAdapter.startCompute();
 		
-		//get data from database
-        helper = new GPSInfoHelper(getApplicationContext());
-        list = new ArrayList<GPSInfo>();
-        list = helper.getGPSPoint();
-        if(list.size() < 2){
-			Toast toast = Toast.makeText(context, context.getResources().getString(R.string.message_base_empty), Toast.LENGTH_SHORT); 
-			toast.show();
-			helper.closeDB();
-			this.finish();
-        }
-        
-        //get real point LatLng
-        for(GPSInfo info: list){
-        	realPoints.add(new LatLng(info.getLatitude(), info.getLongitude()));
-        }
-  	
+		//3. Get a points array that has been received from GPS  
+        getRealPoints();
+        	
 		mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
 		map = mapFragment.getMap();
 		
@@ -146,23 +137,8 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		      finish();
 		      return;
 		    }
-		//moving camera to first point
-		if(points2.size() != 0){
-				
-		}
 
-		//Show on map way as marker or track
-			
-		//because a parameter MAX_WAYPOINTS must be less 8 divide a array into parts
-		ArrayList<GPSInfo> list8 = new ArrayList<GPSInfo>();
-		for(int i=0; i<list.size() ; i++){
-				
-			list8 = new ArrayList<GPSInfo>();
-			for(int j=0; j<8; j++){
-				if ((j + i*7) < list.size()) list8.add(list.get(j + i*7));
-			}
-			addTrack(list8);
-		}
+		//Show on map way as marker or track			
 
 			map.setInfoWindowAdapter(new InfoWindowAdapter() {
 
@@ -235,7 +211,7 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		                    marker.remove();
 		                }
 						
-						destPoint = PolyUtil.GetTargetPoint(clickCoords, points2, false, 5);
+						destPoint = PolyUtil.GetTargetPoint(clickCoords, allPoints, false, 5);
 						
 						if(destPoint != null){
 		                
@@ -283,6 +259,19 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			);
 	}
 	
+	private void getRealPoints() {
+		
+		helper = new GPSInfoHelper(context);
+		list = new ArrayList<GPSInfo>();
+        list = helper.getGPSPoint();
+		realPoints = new ArrayList<LatLng>();
+		
+        //get real point LatLng
+        for(GPSInfo info: list){
+        	realPoints.add(new LatLng(info.getLatitude(), info.getLongitude()));
+        }		
+	}
+
 	/////////////FOR TEST BLOCK
 	
 	
@@ -311,53 +300,6 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 		}
 	}
 	
-	
-	private void addTrack(ArrayList<GPSInfo> list8){
-		//Get URL for multiple waypoints
-
-			String url = getMapsApiDirectionsUrl(list8);
-			
-			//Get array of points from google directions
-			GetPoliLine getPoly = new GetPoliLine();
-	
-			getPoly.setLoaderCallBack(this);
-			getPoly.start(url);
-				 
-	}
-	
-	
-	
-	private String getMapsApiDirectionsUrl(ArrayList<GPSInfo> list8) {
-		
-		StringBuilder waypoints = null;
-		
-		waypoints = new StringBuilder();
-		waypoints.append("waypoints=optimize:true|");
-		
-		//formation request for google server
-
-
-		for(GPSInfo info: list8 ){
-			Log.i("DEBUG", " Thislat:" + Double.toString(info.getLongitude()));
-			waypoints.append(String.valueOf(info.getLatitude()));
-			waypoints.append(",");
-			waypoints.append(String.valueOf(info.getLongitude()));
-			waypoints.append("|");
-		}
-		
-		waypoints.setLength(waypoints.length() - 1);
-		waypoints.append("&");
-		waypoints.append("sensor=true&mode=walking");
-		
-		String params = waypoints.toString();
-		String output = "json";
-		String url = "https://maps.googleapis.com/maps/api/directions/"
-				+ output + "?" + params;
-		 Log.i("DEBUG", " lat:" + url);
-		return url;
-		
-	}
-	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -375,51 +317,31 @@ public class ViewMapActivity extends FragmentActivity implements PoliLoaderCallB
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
-	}
+	}	
 
-	//callback: driving track on map after get response from google server 
+	//4. Get computed points and send to draw on map
 	@Override
-	public void setPoli(List<List<HashMap<String, String>>> routes) {
-		ArrayList<LatLng> points = null;
-		//PolylineOptions polyLineOptions = null;
-		PolylineOptions polyLineOptions = new PolylineOptions();
-		// traversing through routes
+	public void drawPoli(ArrayList<LatLng> points) {
+		/*newPoints = new ArrayList<LatLng>();
+		for(LatLng p: points){
+			newPoints.add(p);	
+		}*/
 		
-		for (int i = 0; i < routes.size(); i++) {
-			points = new ArrayList<LatLng>();
-			polyLineOptions = new PolylineOptions();
-			List<HashMap<String, String>> path = routes.get(i);
-
-			for (int j = 0; j < path.size(); j++) {
-				HashMap<String, String> point = path.get(j);
-
-				double lat = Double.parseDouble(point.get("lat"));
-				double lng = Double.parseDouble(point.get("lng"));
-				LatLng position = new LatLng(lat, lng);
-				points.add(position);
-			}
-
-			polyLineOptions.addAll(points);
-			polyLineOptions.width(2);
-			polyLineOptions.color(Color.BLUE);
-			
+		//add parts of points to allPoints array
+		for(LatLng p: points){
+			allPoints.add(p);	
 		}
-
-		//a array for click on map	
-		for(LatLng p: polyLineOptions.getPoints()){
-			points2.add(p);	
-		}
-		
-		
-		newLatLng = new LatLng(points2.get(0).latitude, points2.get(0).longitude);
-		//newLatLng = new LatLng(49.54965588, 25.59697587);
+		//newPoints = points;
+		newLatLng = new LatLng(points.get(0).latitude, points.get(0).longitude);
 		map.moveCamera(CameraUpdateFactory.newLatLngZoom(newLatLng,15));
+		
+		PolylineOptions polyLineOptions = new PolylineOptions();
+		polyLineOptions.addAll(points);
+		polyLineOptions.width(2);
+		polyLineOptions.color(Color.BLUE);
 		
 		if (viewRouteParameter.equals("marker")) addMarkers(points);
 		else map.addPolyline(polyLineOptions);
-		if (progress.isShowing()) {
-			progress.dismiss();
-		}
 	}
 
 

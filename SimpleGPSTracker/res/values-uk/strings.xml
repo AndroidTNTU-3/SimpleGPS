@@ -16,23 +16,35 @@
      <string name="b_map">Мапа</string>
      <string name="b_send">Відправити</string>
      <string name="message_base_empty">Немає данних місцеположення</string>
+     
+     <string name="dialog_warning_title">Попередження</string>
     
-    <string name="providers">Провайдери</string>
+    <string name="providers">Providers</string>
+    <string name="providers_key">providers</string>
+    <string name="providers_title">Провайдери</string>
     <string name="summary_providers">Вибір провайдера розташування</string>
     
     <string name="refresh_time_title">Час оновлення</string>
+    <string name="refresh_time_key">refreshTime</string>
     <string name="summary_refresh_time">Період оновлення</string>
     
     <string name="view_route_title">Шлях</string>
+    <string name="view_route_key">viewRoute</string>
     <string name="summary_view_route">Вигляд шляху</string>
     
-    <string name="trevel_mode_title">Спосіб переміщення</string>
-    <string name="summary_trevel_mode">Виберіть спосіб переміщення</string>
+    <string name="travel_mode_title">Спосіб переміщення</string>
+    <string name="travel_mode_key">travelMode</string>
+    <string name="summary_travel_mode">Виберіть спосіб переміщення</string>
     
     <string name="set_url_server">Виберіть сервер</string>
     <string name="service_start">Сервіс запушено</string>
     <string name="service_stop">Сервіс зупинено</string>
     <string name="service_started">Ви повинні зупинити сервіс</string>
+    
+    <string name="status_enabled">Увімкнено</string>
+    <string name="status_disabled">Вимкнено</string>
+        <string name="gps">GPS</string>
+    <string name="network">Мережа</string>
     
     <string name="accelerate">Прискорення</string>
     <string name="accelerate_value">м/с</string>
@@ -74,13 +86,13 @@
         <item>"10"</item>
     </string-array>
     
-        <string-array name="trevel_mode">
+   <string-array name="travel_mode">
         <item>driving</item>
         <item>walking</item>
         <item>bicycling</item>
         <item>transit</item>
     </string-array>  
-    <string-array name="trevel_mode_value">
+    <string-array name="travel_mode_value">
         <item>"Driving"</item>
         <item>"Walking"</item>
         <item>"Bicycling"</item>

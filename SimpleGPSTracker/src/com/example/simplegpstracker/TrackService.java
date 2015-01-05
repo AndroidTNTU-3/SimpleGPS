@@ -10,6 +10,7 @@ import java.util.TimerTask;
 import com.example.simplegpstracker.GetPoliLine.PoliLoaderCallBack;
 import com.example.simplegpstracker.db.GPSInfoHelper;
 import com.example.simplegpstracker.entity.GPSInfo;
+import com.example.simplegpstracker.kalman.KalmanManager;
 
 import android.app.Service;
 import android.content.Context;
@@ -20,6 +21,7 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.widget.Toast;
 
 /////////////////////////////////////
 //Service that call LocationLoader class
@@ -36,7 +38,7 @@ public class TrackService extends Service {
 	
 	private SharedPreferences preferences;
 	
-	private int refreshTime = 5;
+	private int refreshTime;
     // run on another Thread to avoid crash
     private Handler mHandler = new Handler();
     // timer handling
@@ -47,6 +49,8 @@ public class TrackService extends Service {
     SensorScanner sensor;
     Context context;
     
+	KalmanManager km;
+    
     @Override
     public IBinder onBind(Intent intent) {
         return null;
@@ -56,13 +60,14 @@ public class TrackService extends Service {
     public void onCreate() {
         // cancel if already existed
     	preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-    	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5"));
-    	//refreshTime = preferences.getInt("refreshTime", 5);
+    	refreshTime = Integer.parseInt(preferences.getString("refreshTime", "5"))  * 1000;
     	Log.i("DEBUG", " Time:" + refreshTime);
         helper = new GPSInfoHelper(getApplicationContext());
         helper.cleanOldRecords();
         
         context = getApplicationContext();
+        
+	    km = new KalmanManager();
         
         locationLoader = new LocationLoader(context, this);
         sensor = new SensorScanner(this);
@@ -76,10 +81,13 @@ public class TrackService extends Service {
         
         ///// schedule task
         //check if any provider is enabled
-        if(locationLoader.IsProviderEnable()) mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, refreshTime * 1000);
+        if(locationLoader.IsProviderEnable()) mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, refreshTime);
         //else service will be stopped
-        else this.stopSelf();
-
+        else {
+        	Log.i("DEBUG", "Provider disabled");
+        	this.stopSelf();
+        }
+        //mTimer.scheduleAtFixedRate(new TimeDisplayTimerTask(), 0, refreshTime);
     }
     
     public int onStartCommand(Intent intent, int flags, int startId) {       
@@ -101,7 +109,12 @@ public class TrackService extends Service {
             		GPSInfo info = new GPSInfo();
             		info = sensor.GetSensorValue(context);
             		if (location != null){
-            		
+            			km.setParam(location);
+                		km.getKalmanLocation();
+                		Location kalmanLocation = new Location(KalmanManager.KALMAN_PROVIDER);
+                		kalmanLocation = km.getKalmanLocation();
+                		location.setLatitude(kalmanLocation.getLatitude());
+                		location.setLongitude(kalmanLocation.getLongitude());
             		info.setId(1);
             		info.setLongitude(location.getLongitude());
             		info.setLatitude(location.getLatitude());
@@ -136,6 +149,8 @@ public class TrackService extends Service {
         sensor.Unregister();
         helper.closeDB();
         mTimer.cancel();
+		Toast toast_stop = Toast.makeText(context, context.getResources().getString(R.string.service_stop), Toast.LENGTH_SHORT);
+		toast_stop.show();
         Log.d("DEBUG", "MyService onDestroy");
       }
 }

@@ -52,16 +52,26 @@
             android:name=".ViewMapActivity"
             android:label="@string/title_activity_view_map" >
         </activity>
+        
+        <activity
+            android:name=".ViewMapActivity1"
+            android:label="@string/title_activity_view_map" >
+        </activity>
 
-        <service android:name=".TrackService" />
+        <service android:name=".TrackService" />     
 
         <activity
-            android:name=".ServerUrlActivity"
+            android:name="com.example.simplegpstracker.preference.ServerUrlActivity"
             android:label="@string/title_activity_server_url" >
         </activity>
         
         <activity
-            android:name=".PrefActivity"
+            android:name="com.example.simplegpstracker.preference.PrefActivity"
+            android:label="@string/title_activity_pref" >
+        </activity>
+        
+        <activity
+            android:name="com.example.simplegpstracker.preference.PreferenceActivityP"
             android:label="@string/title_activity_pref" >
         </activity>
     </application>
